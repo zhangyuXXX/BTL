@@ -157,7 +157,7 @@
         - print(response.json()) 如果返回的json字符串，可以只返回json对象
         - 使用text时，会根据http响应的文本编码自动解码响应内容，大多数unicode字符集都能无缝的被解码
         - 使用content时，返回的是服务器响应数据的原始二进制流，可以用来保存图片等二进制文件
-    - 添加参数 & header  
+    - 添加参数 & header params 接收一个字典或字符串的查询参数，字典类型自动转为url编码，不需要urldecode() 
           
           kw = {'wd':'你好'} 
           header = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36"}
