@@ -136,4 +136,70 @@
         - 如果没有指定，默认为http
     - -X： 参数指定http的请求方法
         - curl -X POST https://www.example.com
-                                                                                     
+### 6. http request的使用
+- 特性：
+    - python标准库中的urllib2模块已经包含了我们平常使用的大多数功能，但是api的使用不太友好，而request自称"HTTP For Humans"使用起来更方便
+    - request唯一一个"非转基因的Python Http库"，可以放心使用   
+    - request继承了urllib2的所有特性
+        - request支持http连接保持和连接池
+        - 支持使用cookie保持会话
+        - 支持文件上传              
+        - 支持自动确认响应内容的编码
+        - 支持国际化的URL和POST数据自动编码
+    - request的底层实现就是urllib3
+- 基本GET使用 
+    - response = request.get("http://www.baidu.com") 或 request.request("get", http://www.baidu.com")
+        - print(response.text) 返回的是unicode格式的数据
+        - print(response.content) 返回的是字节流数据
+        - print(response.url) 返回完整的url
+        - print(response.encoding) 查看响应头部字符编码
+        - print(response.status_code) 查看响应编码
+        - print(response.json()) 如果返回的json字符串，可以只返回json对象
+        - 使用text时，会根据http响应的文本编码自动解码响应内容，大多数unicode字符集都能无缝的被解码
+        - 使用content时，返回的是服务器响应数据的原始二进制流，可以用来保存图片等二进制文件
+    - 添加参数 & header  
+          
+          kw = {'wd':'你好'} 
+          header = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36"}
+          response = requests.get("http://www.baidu.com/s?", params = kw, headers = headers)
+- 基本POST使用:对于post请求来说，我们一本需要为它增加一些参数，最基本的方法就是利用data这个参数
+    
+      data = {
+        "type":"AUTO",
+        "i":"i love python",
+        "doctype":"json",
+        "xmlVersion":"1.8",
+        "keyfrom":"fanyi.web",
+        "ue":"UTF-8",
+        "action":"FY_BY_ENTER",
+        "typoResult":"true"
+      } 
+      url = "http://fanyi.youdao.com/translate?smartresult=dict&smartresult=rule&smartresult=ugc&sessionFrom=null"
+      headers={ "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36"}
+      response = requests.post(url, data = data, headers = headers)
+- session
+    - 在requests中，session对象是一个常用的对象，这个对象代表一次会话：从客户端浏览器连接服务器开始，到客户端浏览器断开连接
+    - 会话能让我们在请求的时候保持某些参数，比如在同一个session实例发出的所有的请求之间保持cookie                                       
+    
+          from requests import sessions as s
+          ss = s.session()
+          headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36"}
+          data = {"email":"mr_mao_hacker@163.com", "password":"alarmchime"}
+          ss.post("https://mail.163.com/", data = data)
+          response = ss.get("http://www.renren.com/410043129/profile")
+          print(response.text)
+### 7. URL定义
+- URL统一资源定位符，实际上就是一个网址。URL可以包含单词(www.baidu.com)或IP地址(127.0.0.1)，大多都是文字的形式
+- URL由三部分组成：资源类型、存放资源的主机域名、资源文件名
+- URL一般语法：protocol://prefix.domain:port/path/filename
+    - protocol:用于指定使用的传输协议（http、https、file、ftp等）
+    - prefix：用于定义域名前缀（http默认为www）
+    - domain：用于定义internet域名（如baidu.com）
+    - port:用于定义主机上的端口号（大部分默认为80，不会显式地写出来）
+    - path：由另个或多个/符号隔开的字符串，一般用于表示服务器上的一个文件目录或地址
+    - filename：用于定义文档或资源的名称
+- URL编码一种将URL中的非ASCII字符的特殊字符转换为可以为web浏览器和服务器普遍接受的、有明确的表示形式的格式
+- 因为URL只能通过使用ASCII字符集(十六进制)将特殊字符在web浏览器和服务器上显示。如果URL包含ASCII字符集之外的字符，则必须转为ASCII字符才可显示
+ 
+          
+          
